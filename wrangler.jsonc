@@ -12,7 +12,9 @@
   "routes": [
     { "pattern": "tessella.nahuelgenchi.com", "custom_domain": true }
   ],
-  // other branches become previews on Cloudflare's side, at their own workers.dev address
+  // other branches become previews on Cloudflare's side, by `npx wrangler preview`, each at its own workers.dev address.
+  // that command stops without the previews block; it is empty because a preview needs nothing the site does not
   "workers_dev": true,
-  "preview_urls": true
+  "preview_urls": true,
+  "previews": {}
 }
