@@ -4,7 +4,7 @@ Colour by number and pixel art, in your browser. Open it at [tessella.nahuelgenc
 
 A tessella is one small tile of a mosaic. In Tessella every pixel is one: pick a picture, fill in its numbered tiles, and watch it appear. You can also draw your own on a blank grid.
 
-Its mascot is Pip, a small bird that leaves a trail of coloured tiles as it flies. On a phone, add Tessella to your Home Screen and Pip becomes its app icon.
+Its mascots are Tessa, a tortoise whose shell is a mosaic, and Pip, a small round bird. Each comes in sixty styles, and you pick one in Settings: it becomes the logo in the header and the icon on the browser tab. On a phone, pick first and then add Tessella to your Home Screen, and your pick becomes the app icon.
 
 ## Your own packs
 
