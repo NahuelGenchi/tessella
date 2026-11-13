@@ -65,6 +65,9 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .hero p{color:var(--muted);font-size:15px;margin-top:6px;max-width:34ch}
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
 .tab{flex:1;min-height:44px;border-radius:10px;font-weight:600;font-size:15px;color:var(--muted)}
+.tab{display:flex;align-items:center;justify-content:center}
+.tab img{width:36px;height:36px;image-rendering:pixelated;pointer-events:none}
+.tab img.wide{height:30px}
 .tab.on{background:var(--ink);color:var(--paper)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .card{display:flex;flex-direction:column;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px;gap:10px;position:relative;transition:transform .12s}
@@ -221,9 +224,9 @@ button{cursor:pointer;border:0;background:none;padding:0}
         <button class="ib" id="themeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.4-.7-.4-1.1 0-1 .8-1.7 1.7-1.7H17a4 4 0 0 0 4-4c0-4.6-4-8.3-9-8.3z"/><circle cx="7.5" cy="12" r="1" fill="currentColor"/><circle cx="9.5" cy="7.8" r="1" fill="currentColor"/><circle cx="14.5" cy="7.3" r="1" fill="currentColor"/></svg></button>
       </header>
       <div class="tabs" role="tablist">
-        <button class="tab on" id="tabColour" role="tab" type="button">Colour</button>
-        <button class="tab" id="tabArt" role="tab" type="button">My art</button>
-        <button class="tab" id="tabAssets" role="tab" type="button">Assets</button>
+        <button class="tab on" id="tabColour" role="tab" type="button" aria-label="Colour" title="Colour"><img src="icons/tabs/tab-colour.png" alt=""></button>
+        <button class="tab" id="tabArt" role="tab" type="button" aria-label="My art" title="My art"><img src="icons/tabs/tab-art.png" alt=""></button>
+        <button class="tab" id="tabAssets" role="tab" type="button" aria-label="Assets" title="Assets"><img class="wide" src="icons/tabs/tab-assets.png" alt=""></button>
       </div>
       <div class="abar" id="assetBar" hidden>
         <div class="ahead">
