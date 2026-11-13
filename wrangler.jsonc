@@ -1,0 +1,18 @@
+// how Cloudflare puts Tessella online. Every push to main runs `npx wrangler deploy` on Cloudflare's side
+// (Workers Builds), and that reads this file. There is no script, only files.
+{
+  "name": "tessella",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    // the site is the top of the repository; what is here but not part of the site is named in .assetsignore
+    "directory": ".",
+    "not_found_handling": "single-page-application"
+  },
+  // the address Tessella answers at. Cloudflare points it here and gives it a certificate on each deploy
+  "routes": [
+    { "pattern": "tessella.nahuelgenchi.com", "custom_domain": true }
+  ],
+  // other branches become previews on Cloudflare's side, at their own workers.dev address
+  "workers_dev": true,
+  "preview_urls": true
+}
