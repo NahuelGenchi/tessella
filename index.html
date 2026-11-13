@@ -177,6 +177,15 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .trow.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .trow .dots{display:flex;flex:none;padding-left:8px}
 .trow .dots i{width:24px;height:24px;border-radius:50%;border:2px solid var(--raise);margin-left:-8px}
+.trow .mimg{width:40px;height:40px;border-radius:10px;flex:none}
+.sheet-card h3{font-family:var(--display);font-size:19px;line-height:1.2;margin-top:8px}
+.sheet-card h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.mpick{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:8px 4px 6px;border-radius:14px;border:2px solid transparent;background:none;color:var(--ink);font:inherit;font-size:11.5px;line-height:1.2;cursor:pointer}
+.mpick img{width:56px;height:56px;border-radius:13px;box-shadow:0 2px 6px rgba(0,0,0,.16)}
+.mpick span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mpick.on{border-color:var(--accent);background:var(--raise)}
+.mpick:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .trow .nm{flex:1;min-width:0;display:flex;flex-direction:column;overflow-wrap:anywhere}
 .trow .nm b{font-weight:600}
 .trow .nm small{font-size:12.5px;font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -209,7 +218,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
           <h1>Tes<span>sella</span></h1>
           <p>Colour pictures by number, or draw your own pixel art.</p>
         </div>
-        <button class="ib" id="themeBtn" type="button" aria-label="Theme"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.4-.7-.4-1.1 0-1 .8-1.7 1.7-1.7H17a4 4 0 0 0 4-4c0-4.6-4-8.3-9-8.3z"/><circle cx="7.5" cy="12" r="1" fill="currentColor"/><circle cx="9.5" cy="7.8" r="1" fill="currentColor"/><circle cx="14.5" cy="7.3" r="1" fill="currentColor"/></svg></button>
+        <button class="ib" id="themeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.4-.7-.4-1.1 0-1 .8-1.7 1.7-1.7H17a4 4 0 0 0 4-4c0-4.6-4-8.3-9-8.3z"/><circle cx="7.5" cy="12" r="1" fill="currentColor"/><circle cx="9.5" cy="7.8" r="1" fill="currentColor"/><circle cx="14.5" cy="7.3" r="1" fill="currentColor"/></svg></button>
       </header>
       <div class="tabs" role="tablist">
         <button class="tab on" id="tabColour" role="tab" type="button">Colour</button>
@@ -1040,7 +1049,12 @@ async function chooseTheme(pk){
 }
 function themeSheet(){
   openSheet(card=>{
-    card.append(el('h2','','Theme'));
+    card.append(el('h2','','Settings'));
+    card.append(el('h3','','Mascot'));
+    const m=mascotOf(mascotKey());
+    const mb=row(card,m.code+' '+m.name,m.who+' · in the header, the tab and the Home Screen icon',false,null,mascotSheet);
+    const mi=el('img','mimg');mi.src=mascotSrc(m.key,180);mi.alt='';mb.prepend(mi);
+    card.append(el('h3','','Theme'));
     card.append(el('p','',packs.length?'Dress the app in the colours of a pack you opened. They are read from its pictures on this device.':'Open a pack in Assets and its colours can dress the app.'));
     row(card,'Tessella','The colours it came with',themeId==='default',['#e8ecf3','#ff4d2e','#18202e'],()=>{chooseTheme(null).then(themeSheet);});
     packs.forEach(pk=>{
@@ -1195,10 +1209,70 @@ function drawHero(url){
     im.onload=()=>{cv.width=im.naturalWidth;cv.height=im.naturalHeight;x.clearRect(0,0,cv.width,cv.height);x.drawImage(im,0,0);};
     im.onerror=fail;im.src=src;
   };
-  // a pack's own picture when its theme is on, else Pip, the mascot; the heart is for copies served without the icons folder
-  if(url)show(url,()=>show(LOGO,heart));else show(LOGO,heart);
+  // the mascot you picked; with none picked, a pack's own picture while its theme is on, else the default mascot.
+  // The heart is for copies served without the icons folder.
+  const logo=mascotSrc(mascotKey(),42);
+  if(url&&!store.get('pxp.mascot',null))show(url,()=>show(logo,heart));else show(logo,heart);
 }
-const LOGO='icons/logo-42.png';
+
+/* ---------- mascot: Tessa or Pip, in every style, as the header logo, tab icon and Home Screen icon ---------- */
+const MASCOTS=[
+  ['Tessa','Ten styles',[['tessa-classic','T1','Classic'],['tessa-front','T2','Hello'],['tessa-hide','T3','Peekaboo'],['tessa-hex','T4','Honeycomb'],['tessa-beret','T5','Painter'],['tessa-sticker','T6','Sticker'],['tessa-flat','T7','Flat'],['tessa-pastel','T8','Pastel'],['tessa-roman','T9','Roman'],['tessa-baby','T10','Baby']]],
+  ['Tessa','More of T1 Classic',[['t1-ocean','T1.1','Ocean'],['t1-sunset','T1.2','Sunset'],['t1-forest','T1.3','Forest'],['t1-candy','T1.4','Candy'],['t1-happy','T1.5','Happy'],['t1-sleepy','T1.6','Sleepy'],['t1-flower','T1.7','Flower'],['t1-sun','T1.8','Sun'],['t1-frame','T1.9','Framed'],['t1-big','T1.10','Close-up']]],
+  ['Tessa','More of T4 Honeycomb',[['t4-honey','T4.1','Honey'],['t4-lava','T4.2','Lava'],['t4-ice','T4.3','Ice'],['t4-galaxy','T4.4','Galaxy'],['t4-bighex','T4.5','Big cells'],['t4-gold','T4.6','Gold grout'],['t4-happy','T4.7','Happy'],['t4-flower','T4.8','Flower'],['t4-sun','T4.9','Sun'],['t4-frame','T4.10','Framed']]],
+  ['Tessa','More of T5 Painter',[['t5-red','T5.1','Red beret'],['t5-black','T5.2','Black beret'],['t5-yellow','T5.3','Yellow beret'],['t5-green','T5.4','Green beret'],['t5-happy','T5.5','Happy'],['t5-sleepy','T5.6','Sleepy'],['t5-ocean','T5.7','Ocean shell'],['t5-sunset','T5.8','Sunset shell'],['t5-sun','T5.9','Sun'],['t5-frame','T5.10','Framed']]],
+  ['Tessa','More of T7 Flat',[['t7-coral','T7.1','On coral'],['t7-cream','T7.2','On cream'],['t7-candy','T7.3','Candy night'],['t7-coralmono','T7.4','Coral only'],['t7-ink','T7.5','Ink only'],['t7-stencil','T7.6','Stencil'],['t7-happy','T7.7','Happy'],['t7-sun','T7.8','Sun'],['t7-tiles','T7.9','Tiled floor'],['t7-big','T7.10','Close-up']]],
+  ['Tessa','More of T8 Pastel',[['t8-lilac','T8.1','Lilac'],['t8-peach','T8.2','Peach'],['t8-mint','T8.3','Mint'],['t8-sky','T8.4','Sky'],['t8-happy','T8.5','Happy'],['t8-sleepy','T8.6','Sleepy'],['t8-flower','T8.7','Flower'],['t8-sun','T8.8','Sun'],['t8-clouds','T8.9','Clouds'],['t8-night','T8.10','Night']]],
+  ['Tessa','More of T9 Roman',[['t9-marble','T9.1','Marble'],['t9-pompeii','T9.2','Pompeii'],['t9-ravenna','T9.3','Ravenna'],['t9-olive','T9.4','Olive'],['t9-happy','T9.5','Happy'],['t9-frame','T9.6','Framed'],['t9-floor','T9.7','Floor'],['t9-sun','T9.8','Sun'],['t9-crown','T9.9','Imperator'],['t9-big','T9.10','Close-up']]],
+  ['Pip','Ten styles',[['pip-classic','P1','Classic'],['pip-front','P2','Hello'],['pip-beret','P3','Painter'],['pip-number','P4','Number one'],['pip-fly','P5','Flight'],['pip-sticker','P6','Sticker'],['pip-flat','P7','Flat'],['pip-pastel','P8','Blossom'],['pip-big','P9','Detailed'],['pip-perch','P10','Perch']]],
+  ['Pip','More of P3 Painter',[['p3-navy','P3.1','Navy beret'],['p3-yellow','P3.2','Yellow beret'],['p3-black','P3.3','Black beret'],['p3-cardinal','P3.4','Cardinal'],['p3-canary','P3.5','Canary'],['p3-teal','P3.6','Teal'],['p3-happy','P3.7','Happy'],['p3-sleepy','P3.8','Sleepy'],['p3-sun','P3.9','Sun'],['p3-frame','P3.10','Framed']]],
+  ['Pip','More of P5 Flight',[['p5-clouds','P5.1','Clouds'],['p5-sun','P5.2','Sun'],['p5-night','P5.3','Night'],['p5-trail','P5.4','Paint trail'],['p5-cardinal','P5.5','Cardinal'],['p5-canary','P5.6','Canary'],['p5-teal','P5.7','Teal'],['p5-happy','P5.8','Happy'],['p5-big','P5.9','Close-up'],['p5-frame','P5.10','Framed']]],
+  ['Pip','More of P6 Sticker',[['p6-coral','P6.1','On coral'],['p6-navy','P6.2','On navy'],['p6-yellow','P6.3','On yellow'],['p6-goldedge','P6.4','Gold edge'],['p6-drop','P6.5','Lifted'],['p6-double','P6.6','Double edge'],['p6-cardinal','P6.7','Cardinal'],['p6-canary','P6.8','Canary'],['p6-happy','P6.9','Happy'],['p6-tiles','P6.10','Tiled']]],
+  ['Pip','More of P10 Perch',[['p10-tall','P10.1','Tower'],['p10-one','P10.2','One row'],['p10-ocean','P10.3','Ocean tiles'],['p10-sunset','P10.4','Sunset tiles'],['p10-roman','P10.5','Roman tiles'],['p10-cardinal','P10.6','Cardinal'],['p10-canary','P10.7','Canary'],['p10-happy','P10.8','Happy'],['p10-big','P10.9','Close-up'],['p10-sun','P10.10','Sun']]]
+];
+const MASCOT_DEFAULT='p5-trail';
+const mascotSrc=(key,size)=>'icons/mascots/'+key+'-'+size+'.png';
+function mascotOf(key){
+  for(const[who,,items]of MASCOTS)for(const[k,code,name]of items)if(k===key)return{key:k,code,name,who};
+  return null;
+}
+function mascotKey(){const k=store.get('pxp.mascot',null);return k&&mascotOf(k)?k:MASCOT_DEFAULT;}
+// the tab icon changes at once; a phone takes the Home Screen icon from this link when Tessella is added there
+function wearMascot(){
+  if(!store.get('pxp.mascot',null))return;
+  const k=mascotKey(),ic=document.querySelector('link[rel="icon"]'),at=document.querySelector('link[rel="apple-touch-icon"]');
+  if(ic){ic.removeAttribute('sizes');ic.href=mascotSrc(k,42);}
+  if(at)at.href=mascotSrc(k,180);
+}
+function setMascot(k){
+  store.set('pxp.mascot',k);wearMascot();drawHero(themeNow&&themeNow.hero);
+  const m=mascotOf(k);toast('Mascot: '+m.code+' '+m.name);
+}
+function mascotSheet(){
+  openSheet(card=>{
+    card.append(el('h2','','Mascot'));
+    card.append(el('p','','Your pick shows in the header and on the browser tab. On a phone, pick first, then add Tessella to the Home Screen to make it the app icon.'));
+    const cur=mascotKey();let who='';
+    MASCOTS.forEach(([w,title,items])=>{
+      if(w!==who){who=w;card.append(el('h3','',w==='Tessa'?'Tessa, the mosaic tortoise':'Pip, the little round bird'));}
+      card.append(el('h4','',title));
+      const g=el('div','mgrid');
+      items.forEach(([key,code,name])=>{
+        const b=el('button','mpick'+(key===cur?' on':''));b.type='button';b.title=code+' '+name;
+        b.setAttribute('aria-pressed',key===cur?'true':'false');
+        const im=el('img');im.src=mascotSrc(key,180);im.alt='';im.loading='lazy';im.decoding='async';
+        b.append(im,el('span','',code+' '+name));
+        b.addEventListener('click',()=>{
+          card.querySelectorAll('.mpick.on').forEach(o=>{o.classList.remove('on');o.setAttribute('aria-pressed','false');});
+          b.classList.add('on');b.setAttribute('aria-pressed','true');setMascot(key);
+        });
+        g.append(b);
+      });
+      card.append(g);
+    });
+    sheetBtn(card,'Done',themeSheet,'pri');
+  });
+}
 
 /* ---------- colour by number ---------- */
 const playBoard=new Board($('playStage'));
@@ -1439,6 +1513,7 @@ $('edMore').addEventListener('click',()=>{
 document.addEventListener('gesturestart',e=>e.preventDefault());
 setColor(ed.color,false);
 (function(){
+  wearMascot();
   const t=store.get('pxp.theme',null);
   if(themeId!=='default'&&okTheme(t)&&t.id===themeId)applyTheme(t);else{themeId='default';drawHero('');}
 })();
