@@ -6,7 +6,10 @@
 <title>Tessella</title>
 <meta name="description" content="Colour by number and pixel art, from asset packs you open on your own computer. Nothing is uploaded.">
 <meta name="theme-color" content="#e8ecf3">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23ff4d2e'/%3E%3Crect x='2' width='2' height='2' fill='%2318202e'/%3E%3Crect y='2' width='2' height='2' fill='%2318202e'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23ff4d2e'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Tessella">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
@@ -1187,11 +1190,15 @@ function drawHero(url){
     const pz=BUILT[0],greys=pz.palette.map(greyOf);cv.width=cv.height=16;
     for(let i=0;i<256;i++){const cx=i%16,cy=i>>4;x.fillStyle=(cx+cy<17)?pz.palette[pz.cells[i]]:greys[pz.cells[i]];x.fillRect(cx,cy,1,1);}
   };
-  if(!url){heart();return;}
-  const im=new Image();
-  im.onload=()=>{cv.width=im.naturalWidth;cv.height=im.naturalHeight;x.clearRect(0,0,cv.width,cv.height);x.drawImage(im,0,0);};
-  im.onerror=heart;im.src=url;
+  const show=(src,fail)=>{
+    const im=new Image();
+    im.onload=()=>{cv.width=im.naturalWidth;cv.height=im.naturalHeight;x.clearRect(0,0,cv.width,cv.height);x.drawImage(im,0,0);};
+    im.onerror=fail;im.src=src;
+  };
+  // a pack's own picture when its theme is on, else Pip, the mascot; the heart is for copies served without the icons folder
+  if(url)show(url,()=>show(LOGO,heart));else show(LOGO,heart);
 }
+const LOGO='icons/logo-42.png';
 
 /* ---------- colour by number ---------- */
 const playBoard=new Board($('playStage'));
